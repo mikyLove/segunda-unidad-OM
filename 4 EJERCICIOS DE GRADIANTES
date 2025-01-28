@@ -1,0 +1,630 @@
+\subsubsection{#1}
+
+\textbf{Código sin gráfica}
+
+\begin{verbatim}
+def g(x):
+    return (x - 5) ** 2
+
+def g_derivative(x):
+    return 2 * (x - 5)
+
+def gradient_descent(initial_x, learning_rate, iterations):
+    x = initial_x
+    history = []
+    history.append((0, x, g(x)))
+    for k in range(1, iterations + 1):
+        grad = g_derivative(x)
+        x = x - learning_rate * grad
+        history.append((k, x, g(x)))
+    return history
+
+def print_history(history):
+    print(f"{'Iteración':<10} {'x_k':<10} {'g(x_k)':<10}")
+    print("-" * 30)
+    for record in history:
+        k, x_k, gxk = record
+        print(f"{k:<10} {x_k:<10.4f} {gxk:<10.4f}")
+
+initial_x = 10
+learning_rate = 0.2
+iterations = 5
+
+history = gradient_descent(initial_x, learning_rate, iterations)
+
+print_history(history)
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Iteración  x_k        g(x_k)    
+------------------------------
+0          10.0000    25.0000   
+1          8.0000     9.0000    
+2          6.8000     3.2400    
+3          6.0800     1.1664    
+4          5.6480     0.4199    
+5          5.3888     0.1512   
+\end{verbatim}
+
+\textbf{Código con gráfica}
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def g(x):
+    return (x - 5) ** 2
+
+def g_derivative(x):
+    return 2 * (x - 5)
+
+def gradient_descent(initial_x, learning_rate, iterations):
+    x = initial_x
+    history = []
+    history.append((0, x, g(x)))
+    for k in range(1, iterations + 1):
+        grad = g_derivative(x)
+        x = x - learning_rate * grad
+        history.append((k, x, g(x)))
+    return history
+
+def print_history(history):
+    print(f"{'Iteracion':<10} {'x_k':<10} {'g(x_k)':<10}")
+    print("-" * 30)
+    for record in history:
+        k, x_k, gxk = record
+        print(f"{k:<10} {x_k:<10.4f} {gxk:<10.4f}")
+
+initial_x = 10
+learning_rate = 0.2
+iterations = 5
+
+history = gradient_descent(initial_x, learning_rate, iterations)
+print_history(history)
+
+iterations_list = [record[0] for record in history]
+x_list = [record[1] for record in history]
+g_x_list = [record[2] for record in history]
+
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(iterations_list, x_list, marker='o')
+plt.title('Convergencia de x\_k')
+plt.xlabel('Iteracion')
+plt.ylabel('x\_k')
+plt.grid(True)
+
+plt.subplot(1, 2, 2)
+plt.plot(iterations_list, g_x_list, marker='o', color='red')
+plt.title('Convergencia de g(x\_k)')
+plt.xlabel('Iteracion')
+plt.ylabel('g(x\_k)')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Iteracion  x_k        g(x_k)    
+------------------------------
+0          10.0000    25.0000   
+1          8.0000     9.0000    
+2          6.8000     3.2400    
+3          6.0800     1.1664    
+4          5.6480     0.4199    
+5          5.3888     0.1512   
+\end{verbatim}
+
+\subsubsection{#2}
+
+\textbf{Código sin gráfica}
+
+\begin{verbatim}
+import numpy as np
+
+x = np.array([1, 2, 3, 4, 5], dtype=float)
+y = np.array([2, 2.8, 3.6, 4.5, 5.1], dtype=float)
+
+beta_0 = 0.0
+beta_1 = 0.0
+
+eta = 0.01
+iterations = 3
+
+def compute_cost(beta_0, beta_1, x, y):
+    predictions = beta_0 + beta_1 * x
+    errors = y - predictions
+    cost = np.sum(errors ** 2)
+    return cost
+
+def compute_gradients(beta_0, beta_1, x, y):
+    predictions = beta_0 + beta_1 * x
+    errors = y - predictions
+    d_beta_0 = -2 * np.sum(errors)
+    d_beta_1 = -2 * np.sum(x * errors)
+    return d_beta_0, d_beta_1
+
+history = []
+
+initial_cost = compute_cost(beta_0, beta_1, x, y)
+history.append((0, beta_0, beta_1, initial_cost))
+
+for k in range(1, iterations + 1):
+    d_beta_0, d_beta_1 = compute_gradients(beta_0, beta_1, x, y)
+    beta_0 = beta_0 - eta * d_beta_0
+    beta_1 = beta_1 - eta * d_beta_1
+    cost = compute_cost(beta_0, beta_1, x, y)
+    history.append((k, beta_0, beta_1, cost))
+
+def print_history(history):
+    print(f"{'Iteracion':<10} {'beta_0':<15} {'beta_1':<15} {'J(beta_0,beta_1)':<20}")
+    print("-" * 60)
+    for record in history:
+        k, b0, b1, cost = record
+        print(f"{k:<10} {b0:<15.6f} {b1:<15.6f} {cost:<20.6f}")
+
+print_history(history)
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Iteracion  beta_0          beta_1          J(beta_0,beta_1)    
+------------------------------------------------------------
+0          0.000000        0.000000        71.060000           
+1          0.360000        1.238000        3.149420            
+2          0.312600        1.006200        0.847692            
+3          0.339480        1.043600        0.746266            
+\end{verbatim}
+
+\textbf{Código con gráfica}
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.array([1, 2, 3, 4, 5], dtype=float)
+y = np.array([2, 2.8, 3.6, 4.5, 5.1], dtype=float)
+
+beta_0 = 0.0
+beta_1 = 0.0
+
+eta = 0.01
+iterations = 3
+
+def compute_cost(beta_0, beta_1, x, y):
+    predictions = beta_0 + beta_1 * x
+    errors = y - predictions
+    cost = np.sum(errors ** 2)
+    return cost
+
+def compute_gradients(beta_0, beta_1, x, y):
+    predictions = beta_0 + beta_1 * x
+    errors = y - predictions
+    d_beta_0 = -2 * np.sum(errors)
+    d_beta_1 = -2 * np.sum(x * errors)
+    return d_beta_0, d_beta_1
+
+history = []
+
+initial_cost = compute_cost(beta_0, beta_1, x, y)
+history.append((0, beta_0, beta_1, initial_cost))
+
+for k in range(1, iterations + 1):
+    d_beta_0, d_beta_1 = compute_gradients(beta_0, beta_1, x, y)
+    beta_0 = beta_0 - eta * d_beta_0
+    beta_1 = beta_1 - eta * d_beta_1
+    cost = compute_cost(beta_0, beta_1, x, y)
+    history.append((k, beta_0, beta_1, cost))
+
+def print_history(history):
+    print(f"{'Iteracion':<10} {'beta_0':<15} {'beta_1':<15} {'J(beta_0,beta_1)':<20}")
+    print("-" * 60)
+    for record in history:
+        k, b0, b1, cost = record
+        print(f"{k:<10} {b0:<15.6f} {b1:<15.6f} {cost:<20.6f}")
+
+print_history(history)
+
+iterations_list = [record[0] for record in history]
+cost_list = [record[3] for record in history]
+
+plt.figure(figsize=(8,6))
+plt.plot(iterations_list, cost_list, marker='o', linestyle='-', color='b')
+plt.title('Convergencia del Descenso de Gradiente')
+plt.xlabel('Iteracion')
+plt.ylabel('Costo (J(beta0, beta1))')
+plt.grid(True)
+plt.show()
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Iteracion  beta_0          beta_1          J(beta_0,beta_1)    
+------------------------------------------------------------
+0          0.000000        0.000000        71.060000           
+1          0.360000        1.238000        3.149420            
+2          0.312600        1.006200        0.847692            
+3          0.339480        1.043600        0.746266            
+\end{verbatim}
+
+\subsubsection{#3}
+
+\textbf{Código sin gráfica}
+
+\begin{verbatim}
+import numpy as np
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+def compute_cost(w, X, y):
+    m = len(y)
+    z = np.dot(X, w)
+    h = sigmoid(z)
+    epsilon = 1e-5
+    cost = -np.sum(y * np.log(h + epsilon) + (1 - y) * np.log(1 - h + epsilon))
+    return cost
+
+def compute_gradients(w, X, y):
+    m = len(y)
+    z = np.dot(X, w)
+    h = sigmoid(z)
+    gradient = np.dot(X.T, (h - y))
+    return gradient
+
+X = np.array([
+    [1, 0.5, 1.0],
+    [1, 1.5, 2.0],
+    [1, 2.0, 2.5],
+    [1, 3.0, 3.5]
+])
+
+y = np.array([0, 0, 1, 1])
+
+w = np.zeros(X.shape[1])
+
+eta = 0.1
+iterations = 3
+
+history = []
+
+initial_cost = compute_cost(w, X, y)
+history.append((0, w.copy(), initial_cost))
+
+for k in range(1, iterations + 1):
+    gradient = compute_gradients(w, X, y)
+    w = w - eta * gradient
+    cost = compute_cost(w, X, y)
+    history.append((k, w.copy(), cost))
+
+def print_history(history):
+    print(f"{'Iteracion':<10} {'w0':<10} {'w1':<10} {'w2':<10} {'Costo':<10}")
+    print("-" * 50)
+    for record in history:
+        k, weights, cost = record
+        w0, w1, w2 = weights
+        print(f"{k:<10} {w0:<10.6f} {w1:<10.6f} {w2:<10.6f} {cost:<10.6f}")
+
+print_history(history)
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Iteracion  w0         w1         w2         Costo     
+--------------------------------------------------
+0          0.000000   0.000000   0.000000   2.772509  
+1          0.000000   0.150000   0.150000   2.533193  
+2          -0.057307  0.177593   0.148940   2.493062  
+3          -0.113412  0.205292   0.148586   2.454228  
+\end{verbatim}
+
+\textbf{Código con gráfica}
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+def compute_cost(w, X, y):
+    m = len(y)
+    z = np.dot(X, w)
+    h = sigmoid(z)
+    epsilon = 1e-5
+    cost = -np.sum(y * np.log(h + epsilon) + (1 - y) * np.log(1 - h + epsilon))
+    return cost
+
+def compute_gradients(w, X, y):
+    m = len(y)
+    z = np.dot(X, w)
+    h = sigmoid(z)
+    gradient = np.dot(X.T, (h - y))
+    return gradient
+
+X = np.array([
+    [1, 0.5, 1.0],
+    [1, 1.5, 2.0],
+    [1, 2.0, 2.5],
+    [1, 3.0, 3.5]
+])
+
+y = np.array([0, 0, 1, 1])
+
+w = np.zeros(X.shape[1])
+
+eta = 0.1
+iterations = 3
+
+history = []
+
+initial_cost = compute_cost(w, X, y)
+history.append((0, w.copy(), initial_cost))
+
+for k in range(1, iterations + 1):
+    gradient = compute_gradients(w, X, y)
+    w = w - eta * gradient
+    cost = compute_cost(w, X, y)
+    history.append((k, w.copy(), cost))
+
+def print_history(history):
+    print(f"{'Iteracion':<10} {'w0':<10} {'w1':<10} {'w2':<10} {'Costo':<10}")
+    print("-" * 50)
+    for record in history:
+        k, weights, cost = record
+        w0, w1, w2 = weights
+        print(f"{k:<10} {w0:<10.6f} {w1:<10.6f} {w2:<10.6f} {cost:<10.6f}")
+
+print_history(history)
+
+iterations_list = [record[0] for record in history]
+cost_list = [record[2] for record in history]
+
+plt.figure(figsize=(8,6))
+plt.plot(iterations_list, cost_list, marker='o', linestyle='-', color='b')
+plt.title('Convergencia del Descenso de Gradiente')
+plt.xlabel('Iteracion')
+plt.ylabel('Costo (J(beta0, beta1))')
+plt.grid(True)
+plt.show()
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Iteracion  w0         w1         w2         Costo     
+--------------------------------------------------
+0          0.000000   0.000000   0.000000   2.772509  
+1          0.000000   0.150000   0.150000   2.533193  
+2          -0.057307  0.177593   0.148940   2.493062  
+3          -0.113412  0.205292   0.148586   2.454228  
+\end{verbatim}
+
+\subsubsection{#4}
+
+\textbf{Código sin gráfica}
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+n_samples = 1000
+n_features = 10
+
+X = np.random.randn(n_samples, n_features)
+
+w_true = np.random.randn(n_features)
+b_true = 5
+
+noise = np.random.randn(n_samples) * 0.5
+y = X.dot(w_true) + b_true + noise
+
+w = np.zeros(n_features)
+b = 0.0
+
+eta = 0.01
+batch_size = 50
+epochs = 10
+
+def compute_cost(X, y, w, b):
+    n = len(y)
+    predictions = X.dot(w) + b
+    errors = predictions - y
+    cost = (1 / (2 * n)) * np.sum(errors ** 2)
+    return cost
+
+def compute_gradients(X, y, w, b):
+    n = len(y)
+    predictions = X.dot(w) + b
+    errors = predictions - y
+    dw = (1 / n) * X.T.dot(errors)
+    db = (1 / n) * np.sum(errors)
+    return dw, db
+
+cost_history = []
+
+n_batches = n_samples // batch_size
+
+for epoch in range(epochs):
+    indices = np.arange(n_samples)
+    np.random.shuffle(indices)
+    X_shuffled = X[indices]
+    y_shuffled = y[indices]
+    
+    for batch in range(n_batches):
+        start = batch * batch_size
+        end = start + batch_size
+        X_batch = X_shuffled[start:end]
+        y_batch = y_shuffled[start:end]
+        
+        dw, db = compute_gradients(X_batch, y_batch, w, b)
+        w -= eta * dw
+        b -= eta * db
+    
+    cost = compute_cost(X, y, w, b)
+    cost_history.append(cost)
+    print(f"Epoca {epoch + 1}/{epochs} - Costo: {cost:.4f}")
+
+plt.figure(figsize=(8,6))
+plt.plot(range(1, epochs + 1), cost_history, marker='o', linestyle='-', color='b')
+plt.title("Convergencia del Descenso de Gradiente Estocastico")
+plt.xlabel("Epoca")
+plt.ylabel("Costo (MSE)")
+plt.grid(True)
+plt.show()
+
+print("\nPesos verdaderos vs Pesos estimados:")
+for i in range(n_features):
+    print(f"w_true[{i}] = {w_true[i]:.4f} \t w_estimated[{i}] = {w[i]:.4f}")
+
+print(f"\nSesgo verdadero: {b_true} \t Sesgo estimado: {b:.4f}")
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Epoca 1/10 - Costo: 10.5288
+Epoca 2/10 - Costo: 6.9969
+Epoca 3/10 - Costo: 4.6690
+Epoca 4/10 - Costo: 3.1327
+Epoca 5/10 - Costo: 2.1170
+Epoca 6/10 - Costo: 1.4448
+Epoca 7/10 - Costo: 0.9992
+Epoca 8/10 - Costo: 0.7038
+Epoca 9/10 - Costo: 0.5077
+Epoca 10/10 - Costo: 0.3774
+
+Pesos verdaderos vs Pesos estimados:
+w_true[0] = -0.6785 	 w_estimated[0] = -0.5833
+w_true[1] = -0.3055 	 w_estimated[1] = -0.2470
+w_true[2] = -0.5974 	 w_estimated[2] = -0.5181
+w_true[3] = 0.1104 	 w_estimated[3] = 0.0189
+w_true[4] = 1.1972 	 w_estimated[4] = 1.0465
+w_true[5] = -0.7710 	 w_estimated[5] = -0.7343
+w_true[6] = 1.0008 	 w_estimated[6] = 0.8853
+w_true[7] = -0.7817 	 w_estimated[7] = -0.6722
+w_true[8] = -0.8476 	 w_estimated[8] = -0.7444
+w_true[9] = 0.8186 	 w_estimated[9] = 0.7340
+
+Sesgo verdadero: 5 	 Sesgo estimado: 4.3276 
+\end{verbatim}
+
+\textbf{Código con gráfica}
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+n_samples = 1000
+n_features = 10
+
+X = np.random.randn(n_samples, n_features)
+
+w_true = np.random.randn(n_features)
+b_true = 5
+
+noise = np.random.randn(n_samples) * 0.5
+y = X.dot(w_true) + b_true + noise
+
+w = np.zeros(n_features)
+b = 0.0
+
+eta = 0.01
+batch_size = 50
+epochs = 10
+
+def compute_cost(X, y, w, b):
+    n = len(y)
+    predictions = X.dot(w) + b
+    errors = predictions - y
+    cost = (1 / (2 * n)) * np.sum(errors ** 2)
+    return cost
+
+def compute_gradients(X, y, w, b):
+    n = len(y)
+    predictions = X.dot(w) + b
+    errors = predictions - y
+    dw = (1 / n) * X.T.dot(errors)
+    db = (1 / n) * np.sum(errors)
+    return dw, db
+
+cost_history = []
+
+n_batches = n_samples // batch_size
+
+for epoch in range(epochs):
+    indices = np.arange(n_samples)
+    np.random.shuffle(indices)
+    X_shuffled = X[indices]
+    y_shuffled = y[indices]
+    
+    for batch in range(n_batches):
+        start = batch * batch_size
+        end = start + batch_size
+        X_batch = X_shuffled[start:end]
+        y_batch = y_shuffled[start:end]
+        
+        dw, db = compute_gradients(X_batch, y_batch, w, b)
+        w -= eta * dw
+        b -= eta * db
+    
+    cost = compute_cost(X, y, w, b)
+    cost_history.append(cost)
+    print(f"Epoca {epoch + 1}/{epochs} - Costo: {cost:.4f}")
+
+plt.figure(figsize=(8,6))
+plt.plot(range(1, epochs + 1), cost_history, marker='o', linestyle='-', color='b')
+plt.title("Convergencia del Descenso de Gradiente Estocastico")
+plt.xlabel("Epoca")
+plt.ylabel("Costo (MSE)")
+plt.grid(True)
+plt.show()
+
+print("\nPesos verdaderos vs Pesos estimados:")
+for i in range(n_features):
+    print(f"w_true[{i}] = {w_true[i]:.4f} \t w_estimated[{i}] = {w[i]:.4f}")
+
+print(f"\nSesgo verdadero: {b_true} \t Sesgo estimado: {b:.4f}")
+\end{verbatim}
+
+\textbf{Resultados}
+
+\begin{verbatim}
+Epoca 1/10 - Costo: 10.5288
+Epoca 2/10 - Costo: 6.9969
+Epoca 3/10 - Costo: 4.6690
+Epoca 4/10 - Costo: 3.1327
+Epoca 5/10 - Costo: 2.1170
+Epoca 6/10 - Costo: 1.4448
+Epoca 7/10 - Costo: 0.9992
+Epoca 8/10 - Costo: 0.7038
+Epoca 9/10 - Costo: 0.5077
+Epoca 10/10 - Costo: 0.3774
+
+Pesos verdaderos vs Pesos estimados:
+w_true[0] = -0.6785 	 w_estimated[0] = -0.5833
+w_true[1] = -0.3055 	 w_estimated[1] = -0.2470
+w_true[2] = -0.5974 	 w_estimated[2] = -0.5181
+w_true[3] = 0.1104 	 w_estimated[3] = 0.0189
+w_true[4] = 1.1972 	 w_estimated[4] = 1.0465
+w_true[5] = -0.7710 	 w_estimated[5] = -0.7343
+w_true[6] = 1.0008 	 w_estimated[6] = 0.8853
+w_true[7] = -0.7817 	 w_estimated[7] = -0.6722
+w_true[8] = -0.8476 	 w_estimated[8] = -0.7444
+w_true[9] = 0.8186 	 w_estimated[9] = 0.7340
+
+Sesgo verdadero: 5 	 Sesgo estimado: 4.3276 
+\end{verbatim}
